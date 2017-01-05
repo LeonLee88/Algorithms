@@ -73,30 +73,37 @@ public class Hopper {
 						return n1.cost < n2.cost ? -1 : 1;
 					}
 				});
-		Map<Integer, Node> visited = new HashMap<>();
+		Map<Integer, Node> settled = new HashMap<>();
+		Map<Integer, Node> inQueue = new HashMap<>();
+		
 		Node seed = new Node(index);
 		seed.cost = 0;
 		minHeap.offer(seed);
-		visited.put(index, seed);
+		inQueue.put(index, seed);
 
 		while (!minHeap.isEmpty()) {
 			Node cur = minHeap.poll();
+			settled.put(cur.key, cur); // since when the node is polled, the cost must be fixed and minimum
+			inQueue.remove(cur);
 			if (cur.key == array.length - 1) {
 				return cur.cost;
 			}
 			List<Integer> neis = getNeis(cur, graph);
 			for (Integer nei : neis) {
 				Node neiNode = null;
-				if (!visited.containsKey(nei)) {
+				if(!inQueue.containsKey(nei) && !settled.containsKey(nei)){
 					neiNode = new Node(nei);
 					neiNode.cost = cur.cost + 1;
-				} else {
-					neiNode = visited.get(nei);
-					minHeap.remove(neiNode); // cost has been changed, we need to remove it and push it back
-					neiNode.cost = Math.min(neiNode.cost, cur.cost + 1);
+					inQueue.put(nei, neiNode);
+					minHeap.offer(neiNode);
+				} else if(!inQueue.containsKey(nei)) {
+					neiNode = inQueue.get(nei);
+					if(neiNode.cost > cur.cost + 1){ //cost need to be changed, we need to remove it and push it back
+						minHeap.remove(neiNode);
+						neiNode.cost = cur.cost + 1;
+						minHeap.offer(neiNode);
+					}
 				}
-				minHeap.offer(neiNode);
-				visited.put(nei, neiNode);
 			}
 		}
 		return -1;
