@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 public class Hopper {
@@ -15,10 +17,11 @@ public class Hopper {
 		// TODO Auto-generated method stub
 		int[] array = { 2, 1, 1, 1, 1, 0 };
 		int[] a = { 2, 4, 3, 1, 3, 1, 1, 1, 2 };
-		int[] test_canjump4 = { 3, 3, 1, 0, 0 };
+		int[] test_canjump4_0 = { 4, 2, 1, 2, 0, 0 };
+		int[] test_canjump4 = { 1, 3, 1, 2, 2 };
 		Hopper sol = new Hopper();
 		sol.minJump3(a);
-		sol.minJump4(test_canjump4, 2);
+		sol.minJump4(test_canjump4_0, 0);
 	}
 
 	public int minJump(int[] array) {
@@ -62,83 +65,33 @@ public class Hopper {
 	}
 
 	public int minJump4(int[] array, int index) {
-		int[][] graph = buildGraph(array);
-		PriorityQueue<Node> minHeap = new PriorityQueue<>(10,
-				new Comparator<Node>() {
-					@Override
-					public int compare(Node n1, Node n2) {
-						if (n1.cost == n2.cost) {
-							return 0;
-						}
-						return n1.cost < n2.cost ? -1 : 1;
-					}
-				});
-		Map<Integer, Node> settled = new HashMap<>();
-		Map<Integer, Node> inQueue = new HashMap<>();
-		
-		Node seed = new Node(index);
-		seed.cost = 0;
-		minHeap.offer(seed);
-		inQueue.put(index, seed);
+		Queue<Integer> queue = new LinkedList<>();
+		boolean[] visited = new boolean[array.length];
 
-		while (!minHeap.isEmpty()) {
-			Node cur = minHeap.poll();
-			settled.put(cur.key, cur); // since when the node is polled, the cost must be fixed and minimum
-			inQueue.remove(cur);
-			if (cur.key == array.length - 1) {
-				return cur.cost;
-			}
-			List<Integer> neis = getNeis(cur, graph);
-			for (Integer nei : neis) {
-				Node neiNode = null;
-				if(!inQueue.containsKey(nei) && !settled.containsKey(nei)){
-					neiNode = new Node(nei);
-					neiNode.cost = cur.cost + 1;
-					inQueue.put(nei, neiNode);
-					minHeap.offer(neiNode);
-				} else if(!inQueue.containsKey(nei)) {
-					neiNode = inQueue.get(nei);
-					if(neiNode.cost > cur.cost + 1){ //cost need to be changed, we need to remove it and push it back
-						minHeap.remove(neiNode);
-						neiNode.cost = cur.cost + 1;
-						minHeap.offer(neiNode);
-					}
+		visited[index] = true;
+		int cost = 0;
+		queue.offer(index);
+
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+			for (int i = 0; i < size; i++) {
+				Integer cur = queue.poll();
+				if (cur == array.length - 1) {
+					return cost;
 				}
+				generate(array, cur, queue, visited);
 			}
+			cost++;
 		}
 		return -1;
 	}
 
-	public int[][] buildGraph(int[] array) {
-		int[][] graph = new int[array.length][array.length];
+	public void generate(int[] array, int index, Queue<Integer> queue, boolean[] visited) {
 		for (int i = 0; i < array.length; i++) {
-			for (int j = 0; j < array.length; j++) {
-				if (i != j && Math.abs(i - j) <= array[i]) {
-					graph[i][j] = 1;
-				}
+			if (!visited[i] && i != index && Math.abs(i - index) <= array[index]) {
+				queue.offer(i);
+				visited[i] = true;
 			}
-		}
-		return graph;
-	}
-
-	// change to integer, element is the key of neis
-	public List<Integer> getNeis(Node n, int[][] graph) {
-		List<Integer> neis = new ArrayList<>();
-		for (int i = 0; i < graph.length; i++) {
-			if (graph[n.key][i] != 0) {
-				neis.add(i);
-			}
-		}
-		return neis;
-	}
-
-	static class Node {
-		int key; // key of node
-		int cost;
-
-		public Node(int key) {
-			this.key = key;
-			this.cost = Integer.MAX_VALUE;
 		}
 	}
 
