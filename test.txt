@@ -1,0 +1,19 @@
+566  git branch
+  567  git checkout -b temp
+  568  git branch
+  569  ls
+  570  touch test.txt
+  571  ls
+  572  git push
+  573  git push --set-upstream origin temp
+  574  git ls
+  575  git status
+  576  git add test.txt
+  577  git status
+  578  git branch
+  579  git commit -m 'Add text.txt'
+  580  git status
+  581  ls
+  582  git pull
+  583  git push
+  584  git branch
