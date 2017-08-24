@@ -11,9 +11,10 @@ public class ReOrderLinkedList {
 			cur.next = new ListNode(array[i]);
 			cur = cur.next;
 		}
-		Solution reorder = new Solution();
-		System.out.print(reorder.reorder(dummy.next));
+		Maze reorder = new Maze();
+		//System.out.print(reorder.reorder(dummy.next));
 	}
+
 
 }
 
