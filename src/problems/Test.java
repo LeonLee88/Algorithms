@@ -1,5 +1,11 @@
 package problems;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by leon on 7/9/17.
  */
@@ -34,8 +40,19 @@ public class Test {
 //        int[][] a = {{0,1}, {1, 0}};
 //        sol.canFinish(2, a);
 
-        FactorsCombination sol = new FactorsCombination();
-        sol.getFactors(12);
+//        FactorsCombination sol = new FactorsCombination();
+//        sol.getFactors(12);
+
+//        OutOfBoundaryPaths sol = new OutOfBoundaryPaths();
+//        sol.findPaths(2,2,2,0,0);
+
+//        DecodeString sol = new DecodeString();
+//        sol.decodeString("0[a3[c]]");
+
+        WindowMedian sol = new WindowMedian();
+        int[] a = {4,2, 8, 5, 9, -1};
+        sol.getMedians1(a, 4);
+
     }
 
 }
